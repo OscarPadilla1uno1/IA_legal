@@ -16,17 +16,10 @@ from dotenv import load_dotenv
 from openai import OpenAI
 from sentence_transformers import CrossEncoder, SentenceTransformer
 
+from db_config import connect_db
 from modelos_locales import resolver_modelo
 
 load_dotenv()
-
-DB_PARAMS = {
-    "dbname": "legal_ia",
-    "user": "root",
-    "password": "rootpassword",
-    "host": "localhost",
-    "port": "5432",
-}
 
 HTML_PATH = Path(__file__).with_name("dashboard_busqueda.html")
 EMBEDDING_MODEL_ID = "BAAI/bge-m3"
@@ -72,7 +65,7 @@ class LegalSearchService:
         return corpus
 
     def _connect(self):
-        return psycopg2.connect(**DB_PARAMS)
+        return connect_db()
 
     def ensure_embedding_model(self) -> SentenceTransformer:
         with self.model_lock:

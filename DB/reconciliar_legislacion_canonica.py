@@ -4,15 +4,9 @@ import unicodedata
 
 import psycopg2
 
-sys.stdout.reconfigure(encoding="utf-8")
+from db_config import connect_db
 
-DB_PARAMS = {
-    "dbname": "legal_ia",
-    "user": "root",
-    "password": "rootpassword",
-    "host": "localhost",
-    "port": "5432",
-}
+sys.stdout.reconfigure(encoding="utf-8")
 
 LAW_KEYWORDS = (
     "constitucion",
@@ -130,7 +124,7 @@ def match_article(cursor, ley_id, article_hint):
 
 
 def main():
-    conn = psycopg2.connect(**DB_PARAMS)
+    conn = connect_db()
     cursor = conn.cursor()
 
     try:

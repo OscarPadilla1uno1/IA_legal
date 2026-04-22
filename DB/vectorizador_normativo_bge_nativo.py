@@ -8,6 +8,7 @@ import torch
 from psycopg2.extras import execute_batch
 from sentence_transformers import SentenceTransformer
 
+from db_config import connect_db
 from modelos_locales import resolver_modelo
 
 sys.stdout.reconfigure(encoding="utf-8")
@@ -15,14 +16,6 @@ try:
     sys.stdout = open(sys.stdout.fileno(), mode="w", encoding="utf-8", buffering=1)
 except OSError:
     pass
-
-DB_PARAMS = {
-    "dbname": "legal_ia",
-    "user": "root",
-    "password": "rootpassword",
-    "host": "localhost",
-    "port": "5432",
-}
 
 GPU_BATCH = int(os.getenv("GPU_BATCH", "128"))
 FETCH_SIZE = int(os.getenv("FETCH_SIZE", "1024"))
@@ -46,7 +39,7 @@ def main():
     )
     print("Modelo cargado.")
 
-    conn = psycopg2.connect(**DB_PARAMS)
+    conn = connect_db()
     cursor = conn.cursor()
 
     cursor.execute("SELECT COUNT(*) FROM fragmentos_normativos WHERE embedding_fragmento IS NULL;")

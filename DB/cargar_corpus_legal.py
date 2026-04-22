@@ -9,15 +9,9 @@ from pathlib import Path
 
 import psycopg2
 
-sys.stdout.reconfigure(encoding="utf-8")
+from db_config import connect_db
 
-DB_PARAMS = {
-    "dbname": "legal_ia",
-    "user": "root",
-    "password": "rootpassword",
-    "host": "localhost",
-    "port": "5432",
-}
+sys.stdout.reconfigure(encoding="utf-8")
 
 NAMESPACE = uuid.UUID("87c0c05b-0ca5-4694-b5db-0cb1126e07d4")
 
@@ -416,7 +410,7 @@ def main():
     payload = load_payload(path)
     dataset = ensure_list(payload)
 
-    conn = psycopg2.connect(**DB_PARAMS)
+    conn = connect_db()
     cursor = conn.cursor()
 
     try:

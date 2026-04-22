@@ -1,17 +1,8 @@
 import sys
 from pathlib import Path
 
-import psycopg2
-
+from db_config import connect_db
 sys.stdout.reconfigure(encoding="utf-8")
-
-DB_PARAMS = {
-    "dbname": "legal_ia",
-    "user": "root",
-    "password": "rootpassword",
-    "host": "localhost",
-    "port": "5432",
-}
 
 
 def ejecutar(cursor, sql, mensaje):
@@ -24,7 +15,7 @@ def main():
     schema_path = base_dir / "schema.sql"
     ddl = schema_path.read_text(encoding="utf-8")
 
-    conn = psycopg2.connect(**DB_PARAMS)
+    conn = connect_db()
     conn.autocommit = True
     cursor = conn.cursor()
 

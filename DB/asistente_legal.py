@@ -1,5 +1,8 @@
 import sys
 
+import psycopg2
+
+from db_config import describe_db_target
 from dashboard_busqueda import LegalSearchService
 
 sys.stdout.reconfigure(encoding="utf-8")
@@ -36,12 +39,19 @@ def main():
             print("\nHasta luego.")
             break
 
-        respuesta = service.llm_search(
-            question=pregunta,
-            top_k_retrieve=10,
-            top_k_final=5,
-            corpus="ambos",
-        )
+        try:
+            respuesta = service.llm_search(
+                question=pregunta,
+                top_k_retrieve=10,
+                top_k_final=5,
+                corpus="ambos",
+            )
+        except psycopg2.OperationalError as exc:
+            print("\nNo se pudo conectar a PostgreSQL.")
+            print(f"Destino configurado: {describe_db_target()}")
+            print("Configura DATABASE_URL o las variables DB_NAME, DB_USER, DB_PASSWORD, DB_HOST y DB_PORT.")
+            print(f"Detalle: {exc}")
+            continue
 
         print("\n" + "─" * 80)
         print("RESPUESTA")
