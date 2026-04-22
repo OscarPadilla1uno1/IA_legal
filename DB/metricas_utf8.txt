@@ -1,0 +1,59 @@
+﻿Iniciando escaneo PARALELIZADO del 100% de la carpera: 17610 fichas...
+
+Escaneo terminado en 101.04 segundos.
+
+--- POSIBLES SUBT═TULOS / CAMPOS DETECTADOS ---
+[17610/17610 docs] -> Tipo de proceso
+[17610/17610 docs] -> Sub tipo de proceso
+[17610/17610 docs] -> Fecha de resoluci¾n
+[17610/17610 docs] -> Magistrado ponente (Aparece M┌LTIPLES veces: 2 docs)
+[17610/17610 docs] -> Materia (Aparece M┌LTIPLES veces: 18 docs)
+[17610/17610 docs] -> Recurrente (Aparece M┌LTIPLES veces: 205 docs)
+[17610/17610 docs] -> Recurrido (Aparece M┌LTIPLES veces: 6 docs)
+[17610/17610 docs] -> Tribunal de procedencia
+[17610/17610 docs] -> Hechos relevantes
+[17610/17610 docs] -> E informaci¾n judicial
+[17610/17610 docs] -> Anonimizada
+[17610/17610 docs] -> Fallo (Aparece M┌LTIPLES veces: 50 docs)
+[17609/17610 docs] -> Fecha de sentencia recurrida
+[17609/17610 docs] -> Tesauro (Aparece M┌LTIPLES veces: 4913 docs)
+[17609/17610 docs] -> Respuesta al problema jurÝdico (Aparece M┌LTIPLES veces: 4913 docs)
+[17609/17610 docs] -> Consideraciones de la sala (Aparece M┌LTIPLES veces: 4913 docs)
+[17609/17610 docs] -> Legislaci¾n aplicada (Aparece M┌LTIPLES veces: 4913 docs)
+[17609/17610 docs] -> ArtÝculo (Aparece M┌LTIPLES veces: 5050 docs)
+[17609/17610 docs] -> JerarquÝa jurisprudencial (Aparece M┌LTIPLES veces: 4913 docs)
+[17609/17610 docs] -> CategorÝa (Aparece M┌LTIPLES veces: 4915 docs)
+[17609/17610 docs] -> Novedades (Aparece M┌LTIPLES veces: 4914 docs)
+[17609/17610 docs] -> Vigencia jurisprudencial (Aparece M┌LTIPLES veces: 4913 docs)
+[17608/17610 docs] -> Sub indice (Aparece M┌LTIPLES veces: 4913 docs)
+[17519/17610 docs] -> Vigente (Aparece M┌LTIPLES veces: 4838 docs)
+[17513/17610 docs] -> Reiterativa (Aparece M┌LTIPLES veces: 4828 docs)
+[17460/17610 docs] -> Sentencia (Aparece M┌LTIPLES veces: 1875 docs)
+[16912/17610 docs] -> No definida (Aparece M┌LTIPLES veces: 4554 docs)
+[10900/17610 docs] -> Casaci¾n (Aparece M┌LTIPLES veces: 615 docs)
+[9736/17610 docs] -> Motivo de la casaci¾n
+[8270/17610 docs] -> Certificacion (Aparece M┌LTIPLES veces: 22 docs)
+[8061/17610 docs] -> Certificaci¾n (Aparece M┌LTIPLES veces: 473 docs)
+[7220/17610 docs] -> Derecho constitucional (Aparece M┌LTIPLES veces: 37 docs)
+[6861/17610 docs] -> No se indica (Aparece M┌LTIPLES veces: 627 docs)
+[6716/17610 docs] -> Acto recurrido
+[5901/17610 docs] -> No ha lugar (Aparece M┌LTIPLES veces: 4 docs)
+[5299/17610 docs] -> C¾digo del trabajo (Aparece M┌LTIPLES veces: 2565 docs)
+[5280/17610 docs] -> Derecho laboral (Aparece M┌LTIPLES veces: 1 docs)
+[5270/17610 docs] -> Carlos alberto almendarez calix (Aparece M┌LTIPLES veces: 861 docs)
+[5208/17610 docs] -> Constitucional (Aparece M┌LTIPLES veces: 2903 docs)
+[5160/17610 docs] -> Secretaria general (Aparece M┌LTIPLES veces: 6 docs)
+[5148/17610 docs] -> Penal (Aparece M┌LTIPLES veces: 106 docs)
+[5146/17610 docs] -> Derecho procesal laboral (Aparece M┌LTIPLES veces: 1550 docs)
+[5028/17610 docs] -> Ley sobre justicia (Aparece M┌LTIPLES veces: 2793 docs)
+[4851/17610 docs] -> Dice: (Aparece M┌LTIPLES veces: 204 docs)
+[4741/17610 docs] -> Literalmente (Aparece M┌LTIPLES veces: 195 docs)
+[4680/17610 docs] -> Sala (Aparece M┌LTIPLES veces: 362 docs)
+[4547/17610 docs] -> Amparo (Aparece M┌LTIPLES veces: 110 docs)
+[4475/17610 docs] -> Morazßn (Aparece M┌LTIPLES veces: 17 docs)
+[3963/17610 docs] -> Suprema (Aparece M┌LTIPLES veces: 219 docs)
+[3751/17610 docs] -> Laboral (Aparece M┌LTIPLES veces: 86 docs)
+
+--- ANOMAL═AS ESTRUCTURALES ---
+SIN_CERTIFICACION_BASE: Presente en 9417 documentos (53.48%)
+SIN_TESAURO: Presente en 1 documentos (0.01%)

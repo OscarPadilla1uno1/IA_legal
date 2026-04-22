@@ -1,0 +1,19 @@
+# Ignorar carpetas de entorno virtual sin importar el nombre o ubicación
+**/venv*/
+**/env*/
+venv_bge/
+
+# Ignorar dependencias de Node
+**/node_modules/
+
+**/__pycache__/
+
+# Archivos pesados y logs
+*.log
+*.dll
+*.exe
+.env
+
+# Si tu base de datos vectorial genera archivos pesados (Chroma, FAISS)
+**/index/
+**/chroma/

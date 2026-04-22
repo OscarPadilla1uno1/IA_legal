@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard de Búsqueda Jurídica</title>
+  <style>
+    :root {
+      --bg: #f3efe5;
+      --panel: #fffaf0;
+      --panel-strong: #f0e6d2;
+      --text: #1e1a16;
+      --muted: #6a5f52;
+      --accent: #0b5d4b;
+      --accent-soft: #d8efe6;
+      --border: #d4c7b2;
+      --danger: #8a2f1d;
+      --shadow: 0 18px 45px rgba(34, 27, 17, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(11, 93, 75, 0.12), transparent 30%),
+        linear-gradient(160deg, #f5f1e8 0%, #ece3d4 100%);
+      min-height: 100vh;
+    }
+
+    .shell {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, rgba(11, 93, 75, 0.95), rgba(10, 49, 74, 0.95));
+      color: #fefaf4;
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -40px -60px auto;
+      width: 180px;
+      height: 180px;
+      background: rgba(255, 250, 240, 0.08);
+      border-radius: 50%;
+    }
+
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      letter-spacing: 0.02em;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 760px;
+      line-height: 1.55;
+      color: rgba(255, 250, 244, 0.9);
+    }
+
+    .status-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .status-card,
+    .panel,
+    .result-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .status-card {
+      padding: 16px 18px;
+      min-height: 96px;
+    }
+
+    .status-card .label {
+      display: block;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .status-card .value {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(320px, 380px) minmax(0, 1fr);
+      gap: 22px;
+      margin-top: 24px;
+    }
+
+    .panel {
+      padding: 22px;
+    }
+
+    .panel h2 {
+      margin: 0 0 14px;
+      font-size: 1.25rem;
+    }
+
+    .panel p {
+      color: var(--muted);
+      line-height: 1.5;
+      margin-top: 0;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    textarea,
+    input,
+    select,
+    button {
+      width: 100%;
+      font: inherit;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+    }
+
+    textarea,
+    input,
+    select {
+      background: #fffef9;
+      padding: 12px 14px;
+      color: var(--text);
+    }
+
+    textarea {
+      min-height: 150px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .actions {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    button {
+      cursor: pointer;
+      padding: 13px 16px;
+      font-weight: 700;
+      transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+    }
+
+    button.primary {
+      background: var(--accent);
+      color: #fffdf9;
+      border-color: var(--accent);
+    }
+
+    button.secondary {
+      background: var(--panel-strong);
+      color: var(--text);
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(11, 93, 75, 0.16);
+    }
+
+    .results-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .results-meta {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .message {
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: var(--accent-soft);
+      border: 1px solid rgba(11, 93, 75, 0.16);
+      color: var(--text);
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .message.error {
+      background: #f9dfd9;
+      border-color: rgba(138, 47, 29, 0.2);
+      color: var(--danger);
+    }
+
+    .metrics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .metric-pill {
+      background: #f8f2e7;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    .llm-answer {
+      background: #fcf6eb;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 18px;
+      white-space: pre-wrap;
+      line-height: 1.6;
+    }
+
+    .result-list {
+      display: grid;
+      gap: 16px;
+    }
+
+    .result-card {
+      padding: 18px;
+      animation: rise 240ms ease;
+    }
+
+    .result-card h3 {
+      margin: 0 0 10px;
+      font-size: 1.05rem;
+      line-height: 1.45;
+    }
+
+    .result-card p {
+      margin: 0;
+      line-height: 1.6;
+      color: #2a241e;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .badge {
+      font-size: 0.83rem;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #efe5d4;
+      color: #544536;
+      border: 1px solid rgba(84, 69, 54, 0.12);
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 920px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="hero">
+      <h1>Panel de Pruebas RAG Jurídico</h1>
+      <p>
+        Usa esta vista para comparar tres modos sobre la misma base:
+        búsqueda semántica simple, recuperación híbrida con re-ranking y
+        respuesta final con LLM sobre el contexto recuperado.
+      </p>
+      <div class="status-strip" id="statusStrip"></div>
+    </section>
+
+    <section class="layout">
+      <aside class="panel">
+        <h2>Consulta</h2>
+        <p>Escribe una consulta jurídica y elige el corpus que quieres explorar.</p>
+
+        <div class="field">
+          <label for="query">Pregunta</label>
+          <textarea id="query">es inadmisible el recurso de amparo cuando se alegan cuestiones de mera legalidad</textarea>
+        </div>
+
+        <div class="grid">
+          <div class="field">
+            <label for="topKSemantic">Top semántico</label>
+            <input id="topKSemantic" type="number" min="1" max="20" value="5">
+          </div>
+          <div class="field">
+            <label for="topKRetrieve">Top híbrido</label>
+            <input id="topKRetrieve" type="number" min="1" max="30" value="10">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="topKFinal">Top final tras re-ranking</label>
+          <input id="topKFinal" type="number" min="1" max="15" value="5">
+        </div>
+
+        <div class="field">
+          <label for="corpus">Corpus consultable</label>
+          <select id="corpus">
+            <option value="ambos">Ambos</option>
+            <option value="jurisprudencia">Solo jurisprudencia</option>
+            <option value="leyes">Solo leyes</option>
+          </select>
+        </div>
+
+        <div class="actions">
+          <button class="primary" data-mode="semantic">Probar búsqueda semántica</button>
+          <button class="secondary" data-mode="hybrid">Probar búsqueda híbrida</button>
+          <button class="secondary" data-mode="llm">Probar búsqueda con LLM</button>
+        </div>
+
+        <p class="footer-note">
+          El modo LLM usa la API de OpenAI configurada en tu entorno.
+        </p>
+      </aside>
+
+      <main class="panel">
+        <div class="results-head">
+          <div>
+            <h2 id="resultsTitle">Resultados</h2>
+            <div class="results-meta" id="resultsMeta">Listo para ejecutar una consulta.</div>
+          </div>
+        </div>
+
+        <div class="message" id="messageBox"></div>
+        <div class="metrics" id="metrics"></div>
+        <div class="llm-answer" id="llmAnswer" hidden></div>
+        <div class="result-list" id="resultsList"></div>
+      </main>
+    </section>
+  </div>
+
+  <script>
+    const statusStrip = document.getElementById("statusStrip");
+    const resultsTitle = document.getElementById("resultsTitle");
+    const resultsMeta = document.getElementById("resultsMeta");
+    const messageBox = document.getElementById("messageBox");
+    const metrics = document.getElementById("metrics");
+    const llmAnswer = document.getElementById("llmAnswer");
+    const resultsList = document.getElementById("resultsList");
+
+    function setMessage(text, isError = false) {
+      if (!text) {
+        messageBox.style.display = "none";
+        messageBox.textContent = "";
+        messageBox.classList.remove("error");
+        return;
+      }
+      messageBox.textContent = text;
+      messageBox.style.display = "block";
+      messageBox.classList.toggle("error", isError);
+    }
+
+    function renderHealth(data) {
+      const cards = [
+        ["Estado", data.status],
+        ["Dispositivo", data.device],
+        ["Sentencias", data.db.sentencias],
+        ["Fragmentos", data.db.fragmentos],
+        ["Vectorizados", data.db.vectorizados],
+        ["Leyes", data.db.leyes],
+        ["Códigos", data.db.codigos],
+        ["Artículos", data.db.articulos_ley],
+        ["Frag. normativos", data.db.fragmentos_normativos],
+      ];
+
+      statusStrip.innerHTML = cards.map(([label, value]) => `
+        <article class="status-card">
+          <span class="label">${label}</span>
+          <span class="value">${value}</span>
+        </article>
+      `).join("");
+    }
+
+    function renderMetrics(data) {
+      metrics.innerHTML = "";
+      if (!data) return;
+      Object.entries(data).forEach(([key, value]) => {
+        const pill = document.createElement("span");
+        pill.className = "metric-pill";
+        pill.textContent = `${key}: ${value}`;
+        metrics.appendChild(pill);
+      });
+    }
+
+    function renderResults(items) {
+      resultsList.innerHTML = "";
+      if (!items || !items.length) {
+        resultsList.innerHTML = `<article class="result-card"><p>No hubo resultados para mostrar.</p></article>`;
+        return;
+      }
+
+      items.forEach((item, index) => {
+        const badges = [];
+        if (item.source_type) badges.push(`Origen: ${item.source_type}`);
+        if (item.tipo_norma) badges.push(`Norma: ${item.tipo_norma}`);
+        if (item.tipo) badges.push(`Tipo: ${item.tipo}`);
+        if (item.fecha) badges.push(`Fecha: ${item.fecha}`);
+        if (item.articulo) badges.push(`Artículo: ${item.articulo}`);
+        if (item.version) badges.push(`Versión: ${item.version}`);
+        if (item.similitud !== undefined) badges.push(`Sim: ${item.similitud.toFixed(4)}`);
+        if (item.sim_vector !== undefined) badges.push(`Vector: ${item.sim_vector.toFixed(4)}`);
+        if (item.rank_bm25 !== undefined) badges.push(`BM25: ${item.rank_bm25.toFixed(4)}`);
+        if (item.score_hibrido !== undefined) badges.push(`Híbrido: ${item.score_hibrido.toFixed(4)}`);
+        if (item.score_reranker !== undefined) badges.push(`Reranker: ${item.score_reranker.toFixed(4)}`);
+
+        const card = document.createElement("article");
+        card.className = "result-card";
+        card.innerHTML = `
+          <h3>#${index + 1} · ${item.referencia || item.sentencia || item.ley || "Resultado"}</h3>
+          <div class="badge-row">
+            ${badges.map((badge) => `<span class="badge">${badge}</span>`).join("")}
+          </div>
+          <p>${item.contenido || ""}</p>
+        `;
+        resultsList.appendChild(card);
+      });
+    }
+
+    async function postJson(url, payload) {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Error inesperado");
+      return data;
+    }
+
+    function getPayload() {
+      return {
+        query: document.getElementById("query").value.trim(),
+        top_k: Number(document.getElementById("topKSemantic").value),
+        top_k_retrieve: Number(document.getElementById("topKRetrieve").value),
+        top_k_final: Number(document.getElementById("topKFinal").value),
+        corpus: document.getElementById("corpus").value,
+      };
+    }
+
+    async function run(mode) {
+      const payload = getPayload();
+      const modeMap = {
+        semantic: {
+          title: "Búsqueda semántica",
+          endpoint: "/api/semantic-search",
+        },
+        hybrid: {
+          title: "Búsqueda híbrida + re-ranking",
+          endpoint: "/api/hybrid-search",
+        },
+        llm: {
+          title: "Búsqueda con LLM",
+          endpoint: "/api/llm-search",
+        },
+      };
+
+      resultsTitle.textContent = modeMap[mode].title;
+      resultsMeta.textContent = "Ejecutando consulta...";
+      llmAnswer.hidden = true;
+      llmAnswer.textContent = "";
+      renderMetrics(null);
+      renderResults([]);
+      setMessage("");
+
+      try {
+        const data = await postJson(modeMap[mode].endpoint, payload);
+        resultsMeta.textContent = `Consulta: ${data.query} | Corpus: ${data.corpus || payload.corpus}`;
+        renderMetrics(data.metrics);
+        if (data.answer) {
+          llmAnswer.hidden = false;
+          llmAnswer.textContent = data.answer;
+        }
+        renderResults(data.results);
+      } catch (error) {
+        resultsMeta.textContent = "La consulta no pudo completarse.";
+        setMessage(error.message, true);
+      }
+    }
+
+    document.querySelectorAll("button[data-mode]").forEach((button) => {
+      button.addEventListener("click", () => run(button.dataset.mode));
+    });
+
+    async function bootstrap() {
+      try {
+        const response = await fetch("/api/health");
+        const data = await response.json();
+        renderHealth(data);
+        setMessage("Servidor listo. Puedes lanzar una prueba.", false);
+      } catch (error) {
+        setMessage("No fue posible leer el estado del servidor.", true);
+      }
+    }
+
+    bootstrap();
+  </script>
+</body>
+</html>

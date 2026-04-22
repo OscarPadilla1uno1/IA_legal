@@ -1,0 +1,27 @@
+services:
+  db:
+    image: ankane/pgvector:v0.5.1
+    container_name: legal_ia_db
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: rootpassword
+      POSTGRES_DB: legal_ia
+    ports:
+      - "5432:5432"
+    volumes:
+      - legal_ia_data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: legal_ia_gui
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+
+volumes:
+  legal_ia_data:
