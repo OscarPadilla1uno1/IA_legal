@@ -62,11 +62,10 @@ def main():
     total_pendientes = cursor.fetchone()[0]
 
     if total_pendientes == 0:
-        print("No hay pendientes. Reseteando vectores para re-procesar...")
-        cursor.execute("UPDATE fragmentos_texto SET embedding_fragmento = NULL;")
-        conn.commit()
-        cursor.execute("SELECT COUNT(*) FROM fragmentos_texto;")
-        total_pendientes = cursor.fetchone()[0]
+        print("Toda la base de datos está completamente vectorizada. No se tocará la base de datos para no dañarla por accidente.")
+        cursor.close()
+        conn.close()
+        return
 
     print(f"Fragmentos por vectorizar: {total_pendientes}")
 
@@ -112,27 +111,42 @@ def main():
             )
             print(f"Encode de lote #{lotes} completado.")
         except Exception as batch_error:
-            print(f"Error en encode de lote #{lotes}: {batch_error}")
-            print(traceback.format_exc())
-            print("Modo rescate 1-a-1...")
+            print(f"Error en encode de lote #{lotes} (OOM probable): {batch_error}")
+            print("Modo rescate 1-a-1 con limpieza dinámica VRAM...")
+            if device == "cuda":
+                torch.cuda.empty_cache()
+                
             for fid, texto in zip(ids, textos):
                 try:
+                    # Intento directo
                     emb = model.encode([texto], normalize_embeddings=True)
                     vec = "[" + ",".join(str(x) for x in emb[0].tolist()) + "]"
                     cursor.execute(
-                        """
-                        UPDATE fragmentos_texto
-                        SET embedding_fragmento = %s::vector
-                        WHERE id = %s::uuid;
-                        """,
-                        (vec, fid),
+                        "UPDATE fragmentos_texto SET embedding_fragmento = %s::vector WHERE id = %s::uuid;",
+                        (vec, fid)
                     )
                     conn.commit()
                 except Exception as single_error:
-                    print(f"Toxico eliminado: {fid} | {texto[:60]}...")
-                    print(f"Error individual: {single_error}")
-                    cursor.execute("DELETE FROM fragmentos_texto WHERE id = %s::uuid;", (fid,))
-                    conn.commit()
+                    print(f"Falla crítica texto {fid} (OOM probable). Aplicando rescate recursivo (Cuchilla)...")
+                    if device == "cuda":
+                        torch.cuda.empty_cache()
+                        
+                    mitad = len(texto) // 2
+                    p1 = texto[:mitad]
+                    p2 = texto[mitad:]
+                    
+                    try:
+                        emb = model.encode([p1], normalize_embeddings=True)
+                        vec = "[" + ",".join(str(x) for x in emb[0].tolist()) + "]"
+                        cursor.execute("UPDATE fragmentos_texto SET embedding_fragmento = %s::vector WHERE id = %s::uuid;", (vec, fid))
+                        conn.commit()
+                        print(" -> Primera mitad salvada con éxito.")
+                    except Exception as inner_error:
+                        print(" -> Abortando este índice, texto intratable incluso partido.")
+                        if device == "cuda":
+                            torch.cuda.empty_cache()
+                        # Ya no borramos la fila, la dejamos como NULL para proteger la integridad de DB.
+                        continue
             procesados += len(ids)
             continue
 

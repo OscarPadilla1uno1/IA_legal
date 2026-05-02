@@ -13,6 +13,28 @@ venv_bge/
 *.dll
 *.exe
 .env
+error_log.txt
+sample_pdf_text.txt
+*.dat
+*.pt
+*.safetensors
+*.bin
+*.model
+*.onnx
+
+# Datos y Dumps
+db_dump_*.json
+corpus_*.json
+extracciones_*.json
+ft_*.jsonl
+*.cyclonedx.json
+studentized_range_mpmath_ref.json
+DB/db_leyes_3nf.json
+
+# Modelos y Artifacts de ML
+modelos_ml/
+artifacts_ml/
+artifacts_ml_full/
 
 # Si tu base de datos vectorial genera archivos pesados (Chroma, FAISS)
 **/index/
