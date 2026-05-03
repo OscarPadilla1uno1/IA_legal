@@ -5,11 +5,16 @@ from transformers import AutoTokenizer, AutoModel
 import psycopg2
 import time
 
+from dotenv import load_dotenv
+
 # Forzar salida en UTF-8 para evitar caracteres raros en la terminal
 try:
     sys.stdout.reconfigure(encoding="utf-8")
 except Exception:
     pass
+
+# Cargar variables de entorno del archivo .env
+load_dotenv()
 
 print(f"\n{'═'*80}")
 print("  MOTOR DE BÚSQUEDA NATIVO (IA LEGAL HONDURAS)")
@@ -17,11 +22,11 @@ print("  Tecnología: BGE-M3 + Transformers + PyTorch")
 print(f"{'═'*80}\n")
 
 DB = {
-    "dbname": "legal_ia",
-    "user": "root",
-    "password": "rootpassword",
-    "host": "localhost",
-    "port": "5432",
+    "dbname":   os.getenv("DB_NAME", "ia_legal"),
+    "user":     os.getenv("DB_USER", "alero"),
+    "password": os.getenv("DB_PASSWORD", "rootpassword"),
+    "host":     os.getenv("DB_HOST", "localhost"),
+    "port":     os.getenv("DB_PORT", "5432"),
 }
 
 # ── Carga del modelo ────────────────────────────────────────────────────────
