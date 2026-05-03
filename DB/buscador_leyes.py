@@ -21,7 +21,7 @@ class BuscadorNormativo:
         self.model = SentenceTransformer('BAAI/bge-m3', device=self.device)
         self.conn = connect_db()
         
-    def buscar(self, query, top_k=5):
+    def buscar(self, query, top_k=10):
         print(f"\nGenerando embedding para: '{query}'...")
         query_embedding = self.model.encode(query, normalize_embeddings=True)
         vec_str = "[" + ",".join(str(x) for x in query_embedding.tolist()) + "]"
@@ -65,6 +65,6 @@ if __name__ == "__main__":
     ]
     
     for q in queries:
-        buscador.buscar(q, top_k=3)
+        buscador.buscar(q, top_k=10)
         
     buscador.cerrar()

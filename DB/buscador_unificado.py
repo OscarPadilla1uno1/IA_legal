@@ -1,25 +1,22 @@
 import sys
-sys.stdout.reconfigure(encoding="utf-8")
-"""
-Buscador Legal Unificado — Honduras
-Combina en una sola consulta:
-  - Jurisprudencia (fragmentos_texto → sentencias)
-  - Normativa (articulos_codigo → codigos_honduras)
+try:
+    sys.stdout.reconfigure(encoding="utf-8")
+except Exception:
+    pass
 
-Uso:
-  python buscador_unificado.py "demanda laboral"
-  python buscador_unificado.py "demanda laboral" --top 5
-"""
+print("[DEBUG] Script iniciado...")
 
 import os
-import sys
 import time
 import argparse
+print("[DEBUG] Librerías base cargadas...")
 
 import psycopg2
 import torch
+print(f"[DEBUG] Torch cargado (Versión: {torch.__version__})")
 from sentence_transformers import SentenceTransformer
 from modelos_locales import resolver_modelo
+print("[DEBUG] Librerías de IA cargadas...")
 
 DB = {
     "dbname": "legal_ia",
@@ -33,7 +30,7 @@ DB = {
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 modelo_fuente = resolver_modelo("BAAI/bge-m3")
-print(f"[IA] Cargando BGE-M3 en {device.upper()}...")
+print(f"[IA] Cargando BGE-M3 en {device.upper()} desde: {modelo_fuente}")
 model = SentenceTransformer(
     modelo_fuente, device=device, local_files_only=os.path.isdir(modelo_fuente)
 )
@@ -148,12 +145,12 @@ def presentar_resultados(query: str, top: int = 5):
             print(f"\n  [{i}] Similitud: {float(sim)*100:.1f}%")
             print(f"       Sentencia  : {num_sent or 'N/D'}")
             print(f"       Fecha      : {fecha or 'N/D'}")
-            print(f"       Tribunal   : {(tribunal or 'N/D')[:60]}")
+            print(f"       Tribunal   : {(tribunal or 'N/D')[:120]}")
             print(f"       Magistrado : {magistrado or 'N/D'}")
             print(f"       Materia    : {materia or 'N/D'}")
-            print(f"       Fallo      : {(fallo or 'N/D')[:120]}")
+            print(f"       Fallo      : {(fallo or 'N/D')[:200]}")
             print(f"       Fragmento  ({tipo}):")
-            print(f"         {contenido.strip()[:400]}")
+            print(f"         {contenido.strip()[:1000]}")
 
     # ── NORMATIVA (CÓDIGOS) ─────────────────────────────────────────────────
     separador(f"NORMATIVA / CÓDIGOS  ({len(codigos)} resultados)")
@@ -164,10 +161,10 @@ def presentar_resultados(query: str, top: int = 5):
         for i, row in enumerate(codigos, 1):
             sim, codigo, art_etiqueta, texto = row
             print(f"\n  [{i}] Similitud: {float(sim)*100:.1f}%")
-            print(f"       Código     : {codigo[:70]}")
+            print(f"       Código     : {codigo[:120]}")
             print(f"       Artículo   : {art_etiqueta}")
             print(f"       Texto      :")
-            print(f"         {texto.strip()[:400]}")
+            print(f"         {texto.strip()[:1000]}")
 
     print(f'\n{"═"*78}\n')
 
@@ -180,8 +177,8 @@ if __name__ == "__main__":
     )
     parser.add_argument("query", nargs="?", default=None,
                         help="Consulta en lenguaje natural")
-    parser.add_argument("--top", type=int, default=5,
-                        help="Resultados por categoría (default: 5)")
+    parser.add_argument("--top", type=int, default=10,
+                        help="Resultados por categoría (default: 10)")
     args = parser.parse_args()
 
     if args.query:
